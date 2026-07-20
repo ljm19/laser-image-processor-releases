@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laser Image Processor - Download</title>
+<style>
+  :root {
+    --brand-dark: #181818;
+    --brand-green: #3FA34D;
+    --brand-amber: #FFB71B;
+    --brand-bg: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    background: var(--brand-bg);
+    color: var(--brand-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .card {
+    max-width: 520px;
+    width: 100%;
+    border: 1px solid #e4e4e4;
+    border-radius: 12px;
+    padding: 40px 36px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px;
+    color: var(--brand-dark);
+  }
+  .subtitle {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 28px;
+  }
+  .version-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .version-badge {
+    background: var(--brand-dark);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+  }
+  .version-label {
+    color: #888;
+    font-size: 13px;
+  }
+  #download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: var(--brand-green);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 20px;
+    border-radius: 8px;
+    transition: opacity 0.15s ease;
+  }
+  #download-btn:hover { opacity: 0.9; }
+  #download-btn.disabled {
+    pointer-events: none;
+    background: #cfcfcf;
+    color: #888;
+  }
+  .notes-heading {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin: 28px 0 8px;
+  }
+  #notes {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+    white-space: pre-wrap;
+  }
+  .status {
+    font-size: 13px;
+    color: #999;
+    margin-top: 16px;
+  }
+  .footer-note {
+    margin-top: 28px;
+    font-size: 12px;
+    color: #aaa;
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+  }
+  .amber-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--brand-amber);
+    display: inline-block;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Laser Image Processor</h1>
+    <p class="subtitle">Switch Boss - internal order &amp; image production tool</p>
+
+    <div class="version-row">
+      <span class="version-badge" id="version-badge">Loading...</span>
+      <span class="version-label">latest version</span>
+    </div>
+
+    <a id="download-btn" class="disabled" href="#">Loading download link...</a>
+
+    <div class="notes-heading">What's new</div>
+    <div id="notes">Fetching release notes...</div>
+
+    <div class="status" id="status"></div>
+
+    <div class="footer-note">
+      <span class="amber-dot"></span>Already have it installed? Use "Check for Updates" inside the app instead - it downloads straight into your app folder for you.
+    </div>
+  </div>
+
+<script>
+  // Reads version.json from this same repo (works whether this page is
+  // served from GitHub Pages root or a /docs folder, since version.json
+  // sits right next to it) - same file the app itself reads for
+  // "Check for Updates", so this page and the app are always in sync.
+  fetch("version.json", { cache: "no-store" })
+    .then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(function (manifest) {
+      var version = manifest.version || "unknown";
+      var url = manifest.url || "";
+      var notes = manifest.notes || "No release notes provided.";
+
+      document.getElementById("version-badge").textContent = "v" + version;
+      document.getElementById("notes").textContent = notes;
+
+      var btn = document.getElementById("download-btn");
+      if (url) {
+        btn.href = url;
+        btn.textContent = "Download v" + version;
+        btn.classList.remove("disabled");
+      } else {
+        btn.textContent = "Download link unavailable";
+      }
+    })
+    .catch(function (err) {
+      document.getElementById("version-badge").textContent = "Unavailable";
+      document.getElementById("notes").textContent = "Could not load version.json.";
+      document.getElementById("status").textContent = "Error: " + err.message;
+    });
+</script>
+</body>
+</html>
